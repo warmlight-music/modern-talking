@@ -30,17 +30,6 @@
   .album__sub { color:var(--muted); font-size:16px; font-style:italic; letter-spacing: 2px; }
 
   .story { max-width: 600px; width: 100%; background: rgba(15, 36, 68, 0.6); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 20px; padding: 24px; font-size: 15px; color: var(--text); box-shadow: 0 10px 30px rgba(0,0,0,0.4); text-align: center; }
-  
-  .tagline {
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 16px;
-    text-shadow: 0 0 10px var(--glow);
-  }
-
   .story p:last-child { margin-bottom: 0; font-style: italic; color: var(--accent); margin-top: 12px;}
 
   .carousel { width:100%; max-width:960px; display:flex; gap:18px; overflow-x:auto; padding:10px 8px 20px; scroll-snap-type:x mandatory; scrollbar-width:thin; scrollbar-color:var(--accent) transparent; }
@@ -102,6 +91,18 @@
   </div>
 
 <script>
+  // ТОЧНЫЕ ID ИЗ ТВОЕГО СКРИНШОТА
+  const fileIds = {
+    en: [
+      "34491869", "34491878", "34491881", "34491884", "34491889", 
+      "34491892", "34491896", "34491897", "34491899", "34491902"
+    ],
+    ru: [
+      "34491909", "34491911", "34491914", "34491915", "34491922", 
+      "34491926", "34491933", "34491944", "34491949", "34491953"
+    ]
+  };
+
   const album = {
     title: "Modern Talking",
     cover: "cover.jpg",
@@ -131,11 +132,12 @@
   const storyBlock  = document.getElementById('storyBlock');
 
   const pad = (n) => String(n+1).padStart(2,'0');
+  
   const coverPath = (i) => `covers/${pad(i)}.jpg`;
   
   const songPath = (i) => {
-    const fileNum = pad(i);
-    return `songs/${lang}/${lang}-${fileNum}.mp3`; 
+    const id = fileIds[lang][i];
+    return `https://github.com/user-attachments/files/${id}/${lang}-${pad(i)}.mp3`;
   };
   
   const trackName = (t) => lang === 'ru' ? t.ru : t.en;
@@ -146,9 +148,10 @@
       const el = document.createElement('div');
       el.className = 'track' + (i === currentTrack ? ' active' : '');
       el.dataset.index = i;
+      const trackLabel = lang === 'en' ? `TRACK #${i+1}` : `ТРЕК №${i+1}`;
       el.innerHTML = `
         <img class="track__cover" src="${coverPath(i)}" alt="${trackName(t)}">
-        <div class="track__num">TRACK #${i+1}</div>
+        <div class="track__num">${trackLabel}</div>
         <div class="track__name">${trackName(t)}</div>
       `;
       el.addEventListener('click', () => play(i));
@@ -210,7 +213,6 @@
       audio.currentTime = time;
       if (wasPlaying) audio.play().catch(()=>{});
     } else {
-      playerCover.src = "cover.jpg";
       playerTitle.textContent = lang === 'ru' ? 'Выбери песню' : 'Pick a song';
     }
   }
@@ -226,7 +228,6 @@
   document.addEventListener('dragstart', e => e.preventDefault());
 
   setLang('en');
-  renderCarousel(); // <-- ВОТ ЭТА СТРОЧКА РЕШАЕТ ПРОБЛЕМУ
 </script>
 </body>
 </html>
